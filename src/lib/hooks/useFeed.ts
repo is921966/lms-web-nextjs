@@ -42,15 +42,28 @@ export function useFeed() {
         .from('feed_posts')
         .select(`
           *,
-          author:profiles(full_name, avatar_url),
-          channel:feed_channels(name, color)
+          author:author_id(full_name, avatar_url),
+          channel:channel_id(name, color)
         `)
         .order('published_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('Error loading posts:', error)
+        throw error
+      }
 
-      setPosts(data || [])
+      // Обрабатываем случай, когда связанные данные могут отсутствовать
+      const formattedPosts = (data || []).map(post => ({
+        ...post,
+        author: post.author || { full_name: 'Неизвестный автор' },
+        channel: post.channel || { name: 'Общий канал', color: '#6B7280' },
+        likes_count: post.likes_count || 0,
+        comments_count: post.comments_count || 0
+      }))
+
+      setPosts(formattedPosts)
     } catch (err) {
+      console.error('Feed loading error:', err)
       setError(err instanceof Error ? err.message : 'Failed to load posts')
       setPosts([])
     } finally {
@@ -59,15 +72,30 @@ export function useFeed() {
   }
 
   const createPost = async (post: { title: string; content: string; channel_id: string }) => {
-    const supabase = createBrowserClient()
-    const { error } = await supabase
-      .from('feed_posts')
-      .insert(post)
+    try {
+      const supabase = createBrowserClient()
+      
+      // Используем фиксированный author_id для тестирования
+      const postWithAuthor = {
+        ...post,
+        author_id: 'd0d5e7a0-1111-1111-1111-111111111111' // ID тестового админа
+      }
+      
+      const { error } = await supabase
+        .from('feed_posts')
+        .insert(postWithAuthor)
 
-    if (error) throw error
-    
-    // Reload posts
-    await loadPosts()
+      if (error) {
+        console.error('Error creating post:', error)
+        throw error
+      }
+      
+      // Reload posts
+      await loadPosts()
+    } catch (err) {
+      console.error('Post creation error:', err)
+      throw err
+    }
   }
 
   return {
