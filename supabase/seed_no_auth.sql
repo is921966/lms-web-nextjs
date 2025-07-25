@@ -10,13 +10,12 @@ ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
 
 -- 1. Создаем тестовые профили
 -- Используем роли которые точно существуют в системе
-INSERT INTO profiles (id, full_name, email, role, department, position, created_at, updated_at) VALUES 
-('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор системы', 'admin@company.com', 'admin', 'IT', 'Системный администратор', NOW(), NOW()),
-('d0d5e7a0-2222-2222-2222-222222222222', 'Мария Иванова', 'maria@company.com', 'employee', 'HR', 'HR менеджер', NOW(), NOW()),
-('d0d5e7a0-3333-3333-3333-333333333333', 'Петр Сидоров', 'petr@company.com', 'employee', 'Продажи', 'Менеджер по продажам', NOW(), NOW())
+INSERT INTO profiles (id, full_name, role, department, position, created_at, updated_at) VALUES 
+('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор системы', 'admin', 'IT', 'Системный администратор', NOW(), NOW()),
+('d0d5e7a0-2222-2222-2222-222222222222', 'Мария Иванова', 'employee', 'HR', 'HR менеджер', NOW(), NOW()),
+('d0d5e7a0-3333-3333-3333-333333333333', 'Петр Сидоров', 'employee', 'Продажи', 'Менеджер по продажам', NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET
   full_name = EXCLUDED.full_name,
-  email = EXCLUDED.email,
   role = EXCLUDED.role,
   department = EXCLUDED.department,
   position = EXCLUDED.position,

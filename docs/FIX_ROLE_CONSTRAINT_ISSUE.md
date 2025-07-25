@@ -28,10 +28,10 @@ ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
 
 -- Создайте профили с ПРАВИЛЬНЫМИ ролями
 -- Замените 'employee' на роль из вашего списка!
-INSERT INTO profiles (id, full_name, email, role, department, position) VALUES 
-('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор', 'admin@test.com', 'admin', 'IT', 'Админ'),
-('d0d5e7a0-2222-2222-2222-222222222222', 'Мария И.', 'maria@test.com', 'employee', 'HR', 'Менеджер'),
-('d0d5e7a0-3333-3333-3333-333333333333', 'Петр С.', 'petr@test.com', 'employee', 'Продажи', 'Менеджер')
+INSERT INTO profiles (id, full_name, role, department, position) VALUES 
+('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор', 'admin', 'IT', 'Админ'),
+('d0d5e7a0-2222-2222-2222-222222222222', 'Мария И.', 'employee', 'HR', 'Менеджер'),
+('d0d5e7a0-3333-3333-3333-333333333333', 'Петр С.', 'employee', 'Продажи', 'Менеджер')
 ON CONFLICT (id) DO UPDATE SET role = EXCLUDED.role;
 ```
 
@@ -51,17 +51,17 @@ supabase/seed_no_auth.sql
 ### Вариант A (для LMS систем):
 ```sql
 -- Роли: admin, student, instructor
-('...', 'Админ', 'admin@test.com', 'admin', 'IT', 'Админ'),
-('...', 'Мария', 'maria@test.com', 'instructor', 'HR', 'Преподаватель'),
-('...', 'Петр', 'petr@test.com', 'student', 'Продажи', 'Студент')
+('...', 'Админ', 'admin', 'IT', 'Админ'),
+('...', 'Мария', 'instructor', 'HR', 'Преподаватель'),
+('...', 'Петр', 'student', 'Продажи', 'Студент')
 ```
 
 ### Вариант B (для корпоративных систем):
 ```sql
 -- Роли: admin, staff, manager
-('...', 'Админ', 'admin@test.com', 'admin', 'IT', 'Админ'),
-('...', 'Мария', 'maria@test.com', 'staff', 'HR', 'Сотрудник'),
-('...', 'Петр', 'petr@test.com', 'staff', 'Продажи', 'Сотрудник')
+('...', 'Админ', 'admin', 'IT', 'Админ'),
+('...', 'Мария', 'staff', 'HR', 'Сотрудник'),
+('...', 'Петр', 'staff', 'Продажи', 'Сотрудник')
 ```
 
 ## ❓ Если ничего не работает
