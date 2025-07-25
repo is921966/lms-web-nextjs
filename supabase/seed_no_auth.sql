@@ -4,19 +4,36 @@
 -- ВАЖНО: Сначала удалите ограничение foreign key
 ALTER TABLE profiles DROP CONSTRAINT IF EXISTS profiles_id_fkey;
 
+-- Проверяем какие роли допустимы
+-- Раскомментируйте эту строку чтобы увидеть ограничения:
+-- \d profiles
+
 -- 1. Создаем тестовые профили
-INSERT INTO profiles (id, full_name, role, department, position, created_at, updated_at) VALUES 
-('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор системы', 'admin', 'IT', 'Системный администратор', NOW(), NOW()),
-('d0d5e7a0-2222-2222-2222-222222222222', 'Мария Иванова', 'user', 'HR', 'HR менеджер', NOW(), NOW()),
-('d0d5e7a0-3333-3333-3333-333333333333', 'Петр Сидоров', 'user', 'Продажи', 'Менеджер по продажам', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
+-- Используем роли которые точно существуют в системе
+INSERT INTO profiles (id, full_name, email, role, department, position, created_at, updated_at) VALUES 
+('d0d5e7a0-1111-1111-1111-111111111111', 'Администратор системы', 'admin@company.com', 'admin', 'IT', 'Системный администратор', NOW(), NOW()),
+('d0d5e7a0-2222-2222-2222-222222222222', 'Мария Иванова', 'maria@company.com', 'employee', 'HR', 'HR менеджер', NOW(), NOW()),
+('d0d5e7a0-3333-3333-3333-333333333333', 'Петр Сидоров', 'petr@company.com', 'employee', 'Продажи', 'Менеджер по продажам', NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET
+  full_name = EXCLUDED.full_name,
+  email = EXCLUDED.email,
+  role = EXCLUDED.role,
+  department = EXCLUDED.department,
+  position = EXCLUDED.position,
+  updated_at = NOW();
+
+-- Если роль 'employee' не подходит, попробуйте эти варианты:
+-- 'student', 'instructor', 'moderator'
 
 -- 2. Создаем каналы ленты
 INSERT INTO feed_channels (id, name, slug, description, icon, color, is_official, creator_id, created_at) VALUES
 ('c0c5e7a0-1111-1111-1111-111111111111', 'Новости компании', 'company-news', 'Официальные новости и объявления', '📢', '#3B82F6', true, 'd0d5e7a0-1111-1111-1111-111111111111', NOW()),
 ('c0c5e7a0-2222-2222-2222-222222222222', 'Обучение и развитие', 'learning', 'Новости о курсах и тренингах', '📚', '#10B981', true, 'd0d5e7a0-1111-1111-1111-111111111111', NOW()),
 ('c0c5e7a0-3333-3333-3333-333333333333', 'HR новости', 'hr-news', 'Важная информация от HR отдела', '👥', '#F59E0B', true, 'd0d5e7a0-2222-2222-2222-222222222222', NOW())
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  description = EXCLUDED.description,
+  updated_at = NOW();
 
 -- 3. Создаем посты в ленте
 INSERT INTO feed_posts (
