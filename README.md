@@ -1,5 +1,10 @@
 # LMS Web Platform 🚀
 
+![Build Status](https://github.com/is921966/lms-web-nextjs/workflows/Deploy%20to%20Railway/badge.svg)
+![Tests](https://img.shields.io/badge/tests-21%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 Современная веб-платформа для корпоративного обучения, построенная на Next.js 14 и Supabase.
 
 ## 🏗 Технологический стек
